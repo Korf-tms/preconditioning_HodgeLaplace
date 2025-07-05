@@ -52,7 +52,7 @@ def assemble_hodge_laplace(k, alpha, Mass, Diff, Stiff):
     return A
 
 
-def assemble_rhs(Mass, k):
+def assemble_rhs(mdg, Mass, k):
     f = generate_rhs(mdg)
     b = np.hstack((Mass[k - 1] @ f[k - 1], Mass[k] @ f[k]))
 
@@ -124,16 +124,7 @@ def make_table(h_list, alpha_list, iters, k_list):
     return latex_str
 
 
-if __name__ == "__main__":
-    dim = 3
-    k_list = np.arange(1, dim + 1)
-    alpha_list = 10.0 ** np.arange(-4, 5, 2)
-
-    if dim == 2:
-        h_list = 2.0 ** (-np.arange(4, 9))
-    else:
-        h_list = 1.5 ** (-np.arange(3, 8))
-
+def get_iteration_counts(dim, k_list, alpha_list, h_list):
     iters = [np.empty((h_list.size, alpha_list.size), dtype=int) for _ in k_list]
 
     for i_h, h in enumerate(h_list):
@@ -146,7 +137,7 @@ if __name__ == "__main__":
         Mass, Diff, Stiff = assemble_block_matrices(mdg)
 
         for i_k, k in enumerate(k_list):
-            b = assemble_rhs(Mass, k)
+            b = assemble_rhs(mdg, Mass, k)
             print("k = {}, n = {}".format(k, b.size))
 
             for i_a, alpha in enumerate(alpha_list):
@@ -155,7 +146,24 @@ if __name__ == "__main__":
 
                 iters[i_k][i_h, i_a] = solve(A, b, P)
 
-    iters = np.hstack(iters)
+    return np.hstack(iters)
+
+
+if __name__ == "__main__":
+    # Input
+    dim = 3
+    k_list = np.arange(1, dim + 1)
+    alpha_list = 10.0 ** np.arange(-4, 5, 2)
+
+    if dim == 2:
+        # h_list = 2.0 ** (-np.arange(4, 9))
+        h_list = 2.0 ** (-np.arange(4, 6))
+    else:
+        # h_list = 1.5 ** (-np.arange(3, 8))
+        h_list = 1.5 ** (-np.arange(3, 5))
+
+    iters = get_iteration_counts(dim, k_list, alpha_list, h_list)
+
     string = make_table(h_list, alpha_list, iters, k_list)
 
     with open("table{}D.txt".format(dim), "w") as f:
