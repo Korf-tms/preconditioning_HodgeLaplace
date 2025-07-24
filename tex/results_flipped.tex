@@ -1,0 +1,73 @@
+\documentclass{amsart}
+\usepackage[foot]{amsaddr}
+\usepackage[a4paper]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{mathtools}
+
+
+
+\begin{document}
+	
+	Results for the preconditioner with flipped direction.
+	Obtained by changing the definition of preconditioners from
+	\begin{verbatim}
+		Bp = alpha * Mass[k - 1] + (alpha + 1) * Stiff[k - 1]
+		Bu = Mass[k] / (alpha + 1) + Stiff[k]
+	\end{verbatim}
+	
+	to the flipped form
+	
+	\begin{verbatim}
+		Bp = alpha * Mass[k - 1] + Stiff[k - 1]
+		Bu = Mass[k] + Stiff[k]
+	\end{verbatim}
+	
+	to implement the preconditioner
+	\begin{align}\label{eq: preconditioner}
+		\mathcal{P} := \begin{bmatrix}
+			I + d^* d & \\
+			& \alpha I +  d^* d
+		\end{bmatrix}^{-1}
+	\end{align}
+	that corresponds(?) to the flipped direction.
+	
+	\begin{table}[h]
+		\caption{2D case}	
+		\begin{tabular}{r|rrrrrrrr|rrrrrrrr}
+			\hline
+			& \multicolumn{8}{|c}{$k = 1$} & \multicolumn{8}{|c}{$k = 2$}\\
+			$h \backslash \log_{10}(\alpha)$ & -4 & -2 & 0 & 2 & 4 & 6 & 8 & 10 & -4 & -2 & 0 & 2 & 4 & 6 & 8 & 10 \\
+			\hline
+			6.42e-02 & 3 & 3 & 4 & 9 & 25 & 17 & 5 & 5 & 1 & 2 & 4 & 10 & 27 & 33 & 9 & 2 \\
+			3.17e-02 & 3 & 3 & 4 & 9 & 29 & 24 & 7 & 5 & 1 & 2 & 4 & 10 & 33 & 63 & 22 & 3 \\
+			1.57e-02 & 3 & 3 & 4 & 9 & 30 & 38 & 11 & 5 & 1 & 2 & 4 & 10 & 40 & 115 & 49 & 3 \\
+			7.83e-03 & 3 & 3 & 4 & 8 & 30 & 52 & 17 & 5 & 1 & 2 & 4 & 10 & 45 & 186 & 113 & 3 \\
+			3.91e-03 & 3 & 3 & 4 & 8 & 30 & 62 & 28 & 7 & 1 & 2 & 4 & 10 & 49 & 240 & 260 & 3 \\
+			1.95e-03 & 3 & 3 & 3 & 8 & 31 & 64 & 45 & 12 & 1 & 2 & 4 & 10 & 52 & 264 & 603 & 14 \\
+			9.77e-04 & 3 & 3 & 3 & 8 & 31 & 64 & 64 & 17 & 1 & 2 & 4 & 10 & 55 & 273 & 1089 & 260 
+		\end{tabular}
+	\end{table}
+	
+	
+	\begin{table}[h]
+		\caption{3D case}
+		\footnotesize
+		\begin{tabular}{r|rrrrrrrr|rrrrrrrr|rrrrrrrr}
+			\hline
+			& \multicolumn{8}{|c}{$k = 1$} & \multicolumn{8}{|c}{$k = 2$} & \multicolumn{8}{|c}{$k = 3$}\\
+			$h \backslash \log_{10}(\alpha)$ & -6 & -4 & -2 & 0 & 2 & 4 & 6 & 8 & -6 & -4 & -2 & 0 & 2 & 4 & 6 & 8 & -6 & -4 & -2 & 0 & 2 & 4 & 6 & 8 \\
+			\hline
+			3.79e-01 & 2 & 2 & 3 & 4 & 11 & 20 & 7 & 4 & 1 & 1 & 2 & 3 & 11 & 25 & 14 & 4 & 1 & 1 & 2 & 4 & 11 & 28 & 15 & 3 \\
+			2.64e-01 & 2 & 2 & 3 & 4 & 10 & 23 & 6 & 4 & 1 & 1 & 2 & 3 & 11 & 29 & 18 & 4 & 1 & 1 & 2 & 4 & 11 & 36 & 21 & 3 \\
+			2.01e-01 & 2 & 2 & 3 & 4 & 10 & 26 & 8 & 4 & 1 & 1 & 2 & 3 & 10 & 32 & 25 & 5 & 1 & 1 & 2 & 4 & 11 & 37 & 28 & 3 \\
+			1.37e-01 & 2 & 3 & 3 & 4 & 10 & 28 & 10 & 4 & 1 & 1 & 2 & 3 & 8 & 37 & 33 & 7 & 1 & 1 & 2 & 4 & 11 & 46 & 43 & 18 \\
+			9.06e-02 & 2 & 2 & 3 & 4 & 10 & 30 & 13 & 4 & 1 & 1 & 2 & 3 & 8 & 40 & 48 & 9 & 1 & 1 & 2 & 4 & 11 & 52 & 69 & 31 \\
+			6.28e-02 & 2 & 3 & 3 & 4 & 10 & 29 & 15 & 4 & 1 & 1 & 2 & 3 & 8 & 41 & 65 & 15 & 1 & 1 & 2 & 4 & 11 & 55 & 100 & 52 
+		\end{tabular}
+	\end{table}
+	
+	
+	
+	
+\end{document}
