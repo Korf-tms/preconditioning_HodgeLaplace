@@ -90,6 +90,26 @@ def create_preconditioner(k, alpha, Mass, Stiff):
     return spla.LinearOperator(matvec=P, shape=shape)
 
 
+def create_preconditioner_flipped(k, alpha, Mass, Stiff):
+    Bp = alpha * Mass[k - 1] + Stiff[k - 1]
+    Bu = Mass[k] + Stiff[k]
+
+    Pp = spla.splu(Bp)
+    Pu = spla.splu(Bu)
+
+    def P(r):
+        rp, ru = np.split(r, [Bp.shape[0]])
+        xp = Pp.solve(rp)
+        xu = Pu.solve(ru)
+
+        return np.hstack((xp, xu))
+
+    shape = (Pp.shape[0] + Pu.shape[0], Pp.shape[0] + Pu.shape[0])
+
+    return spla.LinearOperator(matvec=P, shape=shape)
+
+
+
 def make_table(h_list, alpha_list, iters, k_list):
     latex_str = "\\begin{table}[h]\n\n"
     latex_str += "\\begin{tabular}{r|"
@@ -142,7 +162,7 @@ def get_iteration_counts(dim, k_list, alpha_list, h_list):
 
             for i_a, alpha in enumerate(alpha_list):
                 A = assemble_hodge_laplace(k, alpha, Mass, Diff, Stiff)
-                P = create_preconditioner(k, alpha, Mass, Stiff)
+                P = create_preconditioner_flipped(k, alpha, Mass, Stiff)
 
                 iters[i_k][i_h, i_a] = solve(A, b, P)
 
