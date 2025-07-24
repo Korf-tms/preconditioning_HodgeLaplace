@@ -173,14 +173,15 @@ if __name__ == "__main__":
     # Input
     dim = 3
     k_list = np.arange(1, dim + 1)
-    alpha_list = 10.0 ** np.arange(-4, 5, 2)
+    alpha_list = 10.0 ** np.arange(-4, 12, 2)
 
     if dim == 2:
         # h_list = 2.0 ** (-np.arange(4, 9))
-        h_list = 2.0 ** (-np.arange(4, 6))
+        h_list = 2.0 ** (-np.arange(4, 11))
+        print(h_list)
     else:
         # h_list = 1.5 ** (-np.arange(3, 8))
-        h_list = 1.5 ** (-np.arange(3, 5))
+        h_list = 1.5 ** (-np.arange(3, 9))
 
     iters = get_iteration_counts(dim, k_list, alpha_list, h_list)
 
